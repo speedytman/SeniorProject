@@ -7,6 +7,7 @@ import java.sql.*;
 
 import javafx.application.*;
 import javafx.stage.FileChooser;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import javafx.scene.control.Button;
@@ -37,9 +38,22 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	Text inputImagePath;
 	Rectangle approvalShow;
 	ImageView plateImage;
+	ImageView inputImage;
 	File selectedFile;
 	Image lpImage;
 	VBox selectImageVBox;
+	int windowHeight = 1000;
+	int windowWidth = 2000;
+	int xStart = 0;
+	int xMid = windowWidth/2;
+	int xEnd = windowWidth;
+	int yStart = 0;
+	int yMid = windowHeight/2;
+	int yEnd = windowHeight;
+	int fontSizeLarge = 100;
+	int fontSizeMedium = 80;
+	int fontSizeSmall = 20;
+	int lineWeight = 5;
 	
 	public static void main(String[] args) throws Exception{
         launch(args);
@@ -47,12 +61,34 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	public void start(Stage stage) throws Exception {
 		stage.setTitle("CTS");//title for the window i.e. eclipse-workspace
 		
+		if(Screen.getPrimary().getBounds().getMaxX() < 1000) {
+			windowHeight = 500;
+			windowWidth = 1000;
+			xMid = windowWidth/2;
+			xEnd = windowWidth;
+			yMid = windowHeight/2;
+			yEnd = windowHeight;
+			fontSizeLarge = 50;
+			fontSizeMedium = 40;
+			fontSizeSmall = 10;
+			lineWeight = 2;
+		}
+		
 		root = new Group();
 		Scene scene = new Scene(root,Color.DARKGRAY);
 		
-		approvalShow = new Rectangle(1002, 649, 1000, 98);
+		approvalShow = new Rectangle(xMid, windowHeight*0.65, xEnd-xMid, windowHeight/10);
 		approvalShow.setFill(Color.DARKGRAY);
 		root.getChildren().add(approvalShow);
+		
+		
+		
+		inputImage = new ImageView();
+		inputImage.setLayoutX(xStart);
+		inputImage.setLayoutY(windowHeight/10);
+		inputImage.setFitHeight(windowHeight*0.75);
+		inputImage.setFitWidth(windowWidth/2);
+		root.getChildren().add(inputImage);
 		
 		scene.getStylesheets().add("stylesheet.css");
 		
@@ -70,126 +106,118 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			
 			Image image = new Image(selectedFile.toURI().toString());
 			
-			ImageView imageView = new ImageView(image);
-			imageView.setLayoutX(0);
-			imageView.setLayoutY(100);
-			imageView.setFitHeight(750);
-			imageView.setFitWidth(1000);
-			root.getChildren().add(imageView);
+			inputImage.setImage(image);
 			
 			inputImagePath = new Text();
 			inputImagePath.setText(selectedFile.getPath());
 			inputImagePath.setTextAlignment(TextAlignment.CENTER);
-			inputImagePath.setFont(Font.font("Times New Roman", 20));
+			inputImagePath.setFont(Font.font("Times New Roman", fontSizeSmall));
 			selectImageVBox.getChildren().add(inputImagePath);
 		});
 		selectImageVBox.getChildren().add(selectImage);
 		
 		selectImageVBox.setAlignment(Pos.TOP_CENTER);
-		selectImageVBox.setLayoutX(0);
-		selectImageVBox.setLayoutY(855);
-		selectImageVBox.setMinSize(1000, 100);
+		selectImageVBox.setLayoutX(xStart);
+		selectImageVBox.setLayoutY(windowHeight*0.85);
+		selectImageVBox.setMinSize(windowWidth/2, windowHeight/10);
 		root.getChildren().add(selectImageVBox);
 		
 		runStuff = new Button();
-		runStuff.setLayoutX(1900);
-		runStuff.setLayoutY(900);
+		//runStuff.setLayoutX(1900);
+		//runStuff.setLayoutY(900);
 		runStuff.setText("Run");
 		runStuff.setOnAction(this);
 		VBox runStuffVBox = new VBox(runStuff);
 		runStuffVBox.setAlignment(Pos.TOP_CENTER);
-		runStuffVBox.setLayoutX(1001);
-		runStuffVBox.setLayoutY(855);
-		runStuffVBox.setMinSize(1000, 100);
+		runStuffVBox.setLayoutX(xMid);
+		runStuffVBox.setLayoutY(windowHeight*0.85);
+		runStuffVBox.setMinSize(windowWidth/2, windowHeight/10);
 		root.getChildren().add(runStuffVBox);
 		
 		plateImage = new ImageView();
-		plateImage.setLayoutX(1000);
-		plateImage.setLayoutY(100);
-		plateImage.setFitHeight(550);
-		plateImage.setFitWidth(1000);
+		plateImage.setLayoutX(xMid);
+		plateImage.setLayoutY(windowHeight/10);
+		plateImage.setFitHeight(windowHeight*0.55);
+		plateImage.setFitWidth(windowWidth/2);
 		root.getChildren().add(plateImage);
 		
 		Text CTS = new Text();
 		CTS.setText("Car Tag Scanner");
 		CTS.setTextAlignment(TextAlignment.CENTER);
-		CTS.setFont(Font.font("Times New Roman", 100));
+		CTS.setFont(Font.font("Times New Roman", fontSizeLarge));
 		HBox CTSHBox = new HBox(CTS);
 		CTSHBox.setAlignment(Pos.TOP_CENTER);
-		CTSHBox.setLayoutX(0);
-		CTSHBox.setLayoutY(-15);
-		CTSHBox.setMinSize(2000, 150);
+		CTSHBox.setLayoutX(xStart);
+		CTSHBox.setLayoutY(yStart-(windowHeight*0.015));
+		CTSHBox.setMinSize(windowWidth, windowHeight*0.15);
 		root.getChildren().add(CTSHBox);
 		
 		
 		outText = new Text();
 		outText.setTextAlignment(TextAlignment.CENTER);
-		outText.setFont(Font.font("Times New Roman", 80));
+		outText.setFont(Font.font("Times New Roman", fontSizeMedium));
 		HBox outTextHBox = new HBox(outText);
 		outTextHBox.setAlignment(Pos.CENTER);
-		outTextHBox.setLayoutX(1000);
-		outTextHBox.setLayoutY(750);
-		outTextHBox.setMinSize(1000, 90);
+		outTextHBox.setLayoutX(xMid);
+		outTextHBox.setLayoutY(windowHeight*0.75);
+		outTextHBox.setMinSize(windowWidth/2, windowHeight/10);
 		root.getChildren().add(outTextHBox);
 		
 		approvedText = new Text();
 		approvedText.setTextAlignment(TextAlignment.CENTER);
-		approvedText.setFont(Font.font("Times New Roman", 80));
+		approvedText.setFont(Font.font("Times New Roman", fontSizeMedium));
 		approvedText.setFill(Color.WHITE);
 		HBox approvedTextHBox = new HBox(approvedText);
 		approvedTextHBox.setAlignment(Pos.CENTER);
-		approvedTextHBox.setLayoutX(1000);
-		approvedTextHBox.setLayoutY(650);
-		approvedTextHBox.setMinSize(1000, 100);
+		approvedTextHBox.setLayoutX(xMid);
+		approvedTextHBox.setLayoutY(windowHeight*0.65);
+		approvedTextHBox.setMinSize(windowWidth/2, windowHeight/10);
 		root.getChildren().add(approvedTextHBox);
 		
-		
 		Line line1 = new Line();
-		line1.setStartX(0);
-		line1.setStartY(850);
-		line1.setEndX(2000);
-		line1.setEndY(850);
-		line1.setStrokeWidth(5);
+		line1.setStartX(xStart);
+		line1.setStartY(windowHeight*0.85);
+		line1.setEndX(xEnd);
+		line1.setEndY(windowHeight*0.85);
+		line1.setStrokeWidth(lineWeight);
 		root.getChildren().add(line1);
 		
 		Line line2 = new Line();
-		line2.setStartX(1000);
-		line2.setStartY(100);
-		line2.setEndX(1000);
-		line2.setEndY(850);
-		line2.setStrokeWidth(5);
+		line2.setStartX(xMid);
+		line2.setStartY(windowHeight/10);
+		line2.setEndX(xMid);
+		line2.setEndY(windowHeight*0.85);
+		line2.setStrokeWidth(lineWeight);
 		root.getChildren().add(line2);
 		
 		Line line3 = new Line();
-		line3.setStartX(0);
-		line3.setStartY(100);
-		line3.setEndX(2000);
-		line3.setEndY(100);
-		line3.setStrokeWidth(5);
+		line3.setStartX(xStart);
+		line3.setStartY(windowHeight/10);
+		line3.setEndX(xEnd);
+		line3.setEndY(windowHeight/10);
+		line3.setStrokeWidth(lineWeight);
 		root.getChildren().add(line3);
 		
 		Line line4 = new Line();
-		line4.setStartX(1001);
-		line4.setStartY(750);
-		line4.setEndX(2000);
-		line4.setEndY(750);
-		line4.setStrokeWidth(5);
+		line4.setStartX(xMid);
+		line4.setStartY(windowHeight*0.75);
+		line4.setEndX(xEnd);
+		line4.setEndY(windowHeight*0.75);
+		line4.setStrokeWidth(lineWeight);
 		root.getChildren().add(line4);
 		
 		Line line5 = new Line();
-		line5.setStartX(1001);
-		line5.setStartY(650);
-		line5.setEndX(2000);
-		line5.setEndY(650);
-		line5.setStrokeWidth(5);
+		line5.setStartX(xMid);
+		line5.setStartY(windowHeight*0.65);
+		line5.setEndX(xEnd);
+		line5.setEndY(windowHeight*0.65);
+		line5.setStrokeWidth(lineWeight);
 		root.getChildren().add(line5);
-		
-		
 		
 		Image icon = new Image("CTS_Logo.png");
 		stage.getIcons().add(icon);//sets icon for application
-		stage.setWidth(2000);//width of window
-		stage.setHeight(1000);//height of window
+		stage.setWidth(windowWidth);//width of window
+		stage.setHeight(windowHeight);//height of window
 		stage.setResizable(false);//allow resizing
 		
 		stage.setScene(scene);//sets the scene to the stage
