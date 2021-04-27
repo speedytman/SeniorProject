@@ -60,8 +60,8 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	}
 	public void start(Stage stage) throws Exception {
 		stage.setTitle("CTS");//title for the window i.e. eclipse-workspace
-		
-		if(Screen.getPrimary().getBounds().getMaxX() < 1000) {
+		//if the primary resolution height is less than 1100px so 1080p and below the window size will scale down
+		if(Screen.getPrimary().getBounds().getMaxX() < 1100) {
 			windowHeight = 500;
 			windowWidth = 1000;
 			xMid = windowWidth/2;
@@ -73,16 +73,17 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			fontSizeSmall = 10;
 			lineWeight = 2;
 		}
-		
+		//this is where all of the objects are inserted
 		root = new Group();
+		//contains all of the UI containers(only root for current application)
 		Scene scene = new Scene(root,Color.DARKGRAY);
-		
+		//draws a rectangle with a base color the same as the background(this is changed later to show status of license plate)
 		approvalShow = new Rectangle(xMid, windowHeight*0.65, xEnd-xMid, windowHeight/10);
 		approvalShow.setFill(Color.DARKGRAY);
 		root.getChildren().add(approvalShow);
 		
 		
-		
+		//creates blank image display(will be filled later)
 		inputImage = new ImageView();
 		inputImage.setLayoutX(xStart);
 		inputImage.setLayoutY(windowHeight/10);
@@ -90,24 +91,31 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		inputImage.setFitWidth(windowWidth/2);
 		root.getChildren().add(inputImage);
 		
+		//stylesheet (only used for buttons)
 		scene.getStylesheets().add("stylesheet.css");
 		
+		//promt the user to select an image file
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.getExtensionFilters().addAll(
 				new FileChooser.ExtensionFilter("JPG Files", "*.jpg")
 				,new FileChooser.ExtensionFilter("PNG Files", "*.png")
 				);
-		
+		//VBox and button for selecting image
 		selectImageVBox = new VBox();
 		selectImage = new Button();
 		selectImage.setText("Select Image Path");
+		//action if button is pressed
 		selectImage.setOnAction(e -> {
+			//opens a system explorer instance to choose an image file
 			selectedFile = fileChooser.showOpenDialog(null);
 			
+			//sets image to be the image at the path of the selected file
 			Image image = new Image(selectedFile.toURI().toString());
 			
+			//sets image to be the image shown in the left image display
 			inputImage.setImage(image);
 			
+			//text to show the selected image path below the button
 			inputImagePath = new Text();
 			inputImagePath.setText(selectedFile.getPath());
 			inputImagePath.setTextAlignment(TextAlignment.CENTER);
@@ -116,16 +124,19 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		});
 		selectImageVBox.getChildren().add(selectImage);
 		
+		//VBox for run button
 		selectImageVBox.setAlignment(Pos.TOP_CENTER);
 		selectImageVBox.setLayoutX(xStart);
 		selectImageVBox.setLayoutY(windowHeight*0.85);
 		selectImageVBox.setMinSize(windowWidth/2, windowHeight/10);
 		root.getChildren().add(selectImageVBox);
 		
+		//run button
 		runStuff = new Button();
 		//runStuff.setLayoutX(1900);
 		//runStuff.setLayoutY(900);
 		runStuff.setText("Run");
+		//when clicked look in this class for a method to use
 		runStuff.setOnAction(this);
 		VBox runStuffVBox = new VBox(runStuff);
 		runStuffVBox.setAlignment(Pos.TOP_CENTER);
@@ -134,6 +145,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		runStuffVBox.setMinSize(windowWidth/2, windowHeight/10);
 		root.getChildren().add(runStuffVBox);
 		
+		//blank image display for right image(loaded later)
 		plateImage = new ImageView();
 		plateImage.setLayoutX(xMid);
 		plateImage.setLayoutY(windowHeight/10);
@@ -141,6 +153,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		plateImage.setFitWidth(windowWidth/2);
 		root.getChildren().add(plateImage);
 		
+		//Title text
 		Text CTS = new Text();
 		CTS.setText("Car Tag Scanner");
 		CTS.setTextAlignment(TextAlignment.CENTER);
@@ -152,7 +165,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		CTSHBox.setMinSize(windowWidth, windowHeight*0.15);
 		root.getChildren().add(CTSHBox);
 		
-		
+		//License Plate Text returned by the OCR
 		outText = new Text();
 		outText.setTextAlignment(TextAlignment.CENTER);
 		outText.setFont(Font.font("Times New Roman", fontSizeMedium));
@@ -163,6 +176,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		outTextHBox.setMinSize(windowWidth/2, windowHeight/10);
 		root.getChildren().add(outTextHBox);
 		
+		//text that appear if the license plate is aproved or not
 		approvedText = new Text();
 		approvedText.setTextAlignment(TextAlignment.CENTER);
 		approvedText.setFont(Font.font("Times New Roman", fontSizeMedium));
@@ -174,6 +188,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		approvedTextHBox.setMinSize(windowWidth/2, windowHeight/10);
 		root.getChildren().add(approvedTextHBox);
 		
+		//draws lines on screen
 		Line line1 = new Line();
 		line1.setStartX(xStart);
 		line1.setStartY(windowHeight*0.85);
@@ -214,6 +229,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		line5.setStrokeWidth(lineWeight);
 		root.getChildren().add(line5);
 		
+		//sets the icon
 		Image icon = new Image("CTS_Logo.png");
 		stage.getIcons().add(icon);//sets icon for application
 		stage.setWidth(windowWidth);//width of window
@@ -224,34 +240,44 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		stage.show();//needs to be at end, displays the window on launch
 	}
 	public void handle(ActionEvent event){
+		//if button pressed is runStuff
 		if(event.getSource()==runStuff) {
+			//if file path is not empty
 			if(selectedFile.getPath() != null) {
 				MatlabEngine eng;
 				try {
+					//start matlab engine, change directory
 					eng = MatlabEngine.startMatlab();
-					eng.eval("cd 'C:/Users/treyc/eclipse-workspace/Senior_Project_Java/src'" );
+					//dynamicly locate working directory
+					String dir = System.getProperty("user.dir");
+					eng.eval("cd '" + dir + "\\src'");
 					String x = eng.feval("My_Func", selectedFile.getPath());
+					// image for right image display
 					lpImage = new Image(selectedFile.toURI().toString());
+					//if the returned OCR text is null the text was unreadably by the OCR
 					if(x == null) {
 						x = "Image Text Unreadable";
 					} else {
-						x = x.replaceAll("[\\n\\t ]", "");
+						x = x.replaceAll("[\\n\\t ]", "");//read text has two new lines at the end and contains spaces, this removes them
 					}
 					outText.setFill(Color.BLACK);
-					outText.setText(x);
-					System.out.println(x);
-					eng.close();
+					outText.setText(x);//dispays the predicted license plate text
+					eng.close();//closes the engine
 					
+					//adds image to right image display
 					plateImage.setImage(lpImage);
 					
+					//in place of the database for now
 					String[] licensePlates = new String[3];
 					licensePlates[0] = "B21GSB";
 					licensePlates[1] = "SB90TZI";
 					licensePlates[2] = "C99BNX";
 					boolean approved = false;
+					//check if predicted plate is in the "database"
 					for(int i = 0; i < licensePlates.length; i++) {
 						if(licensePlates[i].equals(x.toString())) {
 							approved = true;
+							//sets text to approved and rectangle color to green
 							approvedText.setText("APPROVED");
 							approvedText.setFill(Color.WHITE);
 							approvalShow.setFill(Color.LAWNGREEN);
@@ -259,6 +285,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 						System.out.println(licensePlates[i].equals(x.toString()) + ": " + i);
 					}
 					if(approved == false) {
+						//sets test to not approved and rectangle color to red
 						approvedText.setText("NOT APPROVED");
 						approvalShow.setFill(Color.RED);
 					}
@@ -268,7 +295,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 				}
 			}
 			else {
-				
+				//error
 				approvalShow.setFill(Color.DARKORANGE);
 				outText.setText("ERROR: No Image Selected");
 				approvedText.setText("ERROR: No Image Selected");
