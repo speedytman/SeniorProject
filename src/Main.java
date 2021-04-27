@@ -11,6 +11,9 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -228,6 +231,30 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		line5.setEndY(windowHeight*0.65);
 		line5.setStrokeWidth(lineWeight);
 		root.getChildren().add(line5);
+		
+		Menu menu1 = new Menu("Home");
+		menu1.setOnShowing(e -> { System.out.println("Showing Menu 1"); });
+		menu1.setOnShown  (e -> { System.out.println("Shown Menu 1"); });
+		menu1.setOnHiding (e -> { System.out.println("Hiding Menu 1"); });
+		menu1.setOnHidden (e -> { System.out.println("Hidden Menu 1"); });
+		MenuItem menu1Item1 = new MenuItem("Item 1");
+		MenuItem menu1Item2 = new MenuItem("Item 2");
+		menu1.getItems().add(menu1Item1);
+		menu1.getItems().add(menu1Item2);
+		Menu menu2 = new Menu("Approved Plates");
+		menu2.setOnShowing(e -> { System.out.println("Showing Menu 2"); });
+		menu2.setOnShown  (e -> { System.out.println("Shown Menu 2"); });
+		menu2.setOnHiding (e -> { System.out.println("Hiding Menu 2"); });
+		menu2.setOnHidden (e -> { System.out.println("Hidden Menu 2"); });
+		MenuItem menu2Item1 = new MenuItem("Source...");
+		MenuItem menu2Item2 = new MenuItem("Add Plates");
+		MenuItem menu2Item3 = new MenuItem("Remove Plates");
+		menu2.getItems().add(menu2Item1);
+		menu2.getItems().add(menu2Item2);
+		menu2.getItems().add(menu2Item3);
+		MenuBar menuBar = new MenuBar();
+		menuBar.getMenus().addAll(menu1, menu2);
+		root.getChildren().add(menuBar);
 		
 		//sets the icon
 		Image icon = new Image("CTS_Logo.png");
