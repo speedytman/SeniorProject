@@ -26,3 +26,11 @@ Used to test the training images bounding box with matlabs built in OCR, agian y
 Copy_of_mydata.mat:
 
 Contains bounding boxes for both the license plate and the new box called other created using test.m
+
+mydata.mat:
+
+Contains bounding boxes for just the license plates
+
+ocrTrainingSession.mat:
+
+Contains the trainging session data used to train our custom OCR for the data. To Run type ocrTrainer in matlabs command window and hit enter, then click open session and open this file.
