@@ -22,5 +22,7 @@ This file contains code used to modify the bounding boxes in the my_data variabl
 Stuff.m: 
 
 Used to test the training images bounding box with matlabs built in OCR, agian you will not need to run this file but if you wish you can. You can change the range of images by editing the two intigers in the x variable of the for loop(start:end)(matlab starts at 1 not zero). 
+
 Copy_of_mydata.mat:
+
 Contains bounding boxes for both the license plate and the new box called other created using test.m
