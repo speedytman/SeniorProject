@@ -1,0 +1,13 @@
+my_data = load('Copy_of_mydata.mat');
+
+trainingData = my_data.vehicleTrainingData;
+
+for x = 1:5
+    I = imread(append('dataset/train/images/', trainingData.imageFilename{x}));
+    for y = 1:height(trainingData.licensePlate{x})
+        cropped = imcrop(I, trainingData.licensePlate{x}(y,:));
+        imageFileName = sprintf('./Train_OCR/croppedImage%s',x);
+        imwrite(cr
+%         figure, imshow(cropped)
+    end
+end
