@@ -1,4 +1,25 @@
 # SeniorProject
+Getting Started:
+
+Using eclipse IDE for java, go to file>import and under Git select import projects from Git. Next click clone URI and copy the URI from this repository and paste it under the locataion box in the URI box. Next clone form master under Branch Selection. Next select the directory you want the project in. Next select your import wizard, you can leave this as default. Finaly click Finish.
+
+When the project is imported you will get some errors. First you will need to import JavaFX.
+
+Download JavaFX: https://gluonhq.com/products/javafx/
+
+Extract the javafx SDK to your programfiles directory, or whichever directory you prefer.
+
+Once extracted, in eclipse go to Window>Preferences>Java>Build Path>User Libraries. Under User Libraries click new and enter JavaFX, the select JavaFX and click add External Jars. Navigate to where you extracted the javafx SDK, go into the SDK folder and go into the lib folder. Select all of the Jar Files in the lib folder and click open. Then click Apply and Close.
+
+Next right click on the project folder and go to Build Path>Add Libraries>User Library and check JavaFX then click finish.
+
+If you have issues with JavaFX check here(https://openjfx.io/openjfx-docs/) for solutions and/or a different instalation guide.
+
+For the Matlab Engine you will follow the same process as javafx, except the .jar file will come with your Matlab installation. By default Matlab is installed in your Program Files folder, once you have located your Matlab folder go into the folder for most up to date version of matlab you have installed, the go to extern>engines>java>jar and use the engine.jar where you used the javafx SDK jar. and proceed through the rest of the instructions.
+
+If you have issues with the Matlab engine installation you can contact us.
+
+
 Java:
 
 Main.java:
