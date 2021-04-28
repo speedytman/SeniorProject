@@ -3,8 +3,6 @@ import com.mathworks.engine.*;
 import java.io.File;
 import java.util.concurrent.ExecutionException;
 
-import java.sql.*;
-
 import javafx.application.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Screen;
@@ -33,15 +31,13 @@ import javafx.geometry.Pos;
 
 public class Main extends Application implements EventHandler<ActionEvent>{
 
-	Button selectImage;
-	Button runStuff;
-	Group root;
-	Text outText;
-	Text approvedText;
-	Text inputImagePath;
+	Stage stage;
+	Scene Home, AddLicensePlate, RemoveLicensePlate;
+	Button selectImage, runStuff;
+	MenuItem sceneAddLicensePlate, sceneRemoveLicensePlate, sceneHome;
+	Text outText, approvedText, inputImagePath;
 	Rectangle approvalShow;
-	ImageView plateImage;
-	ImageView inputImage;
+	ImageView plateImage, inputImage;
 	File selectedFile;
 	Image lpImage;
 	VBox selectImageVBox;
@@ -61,7 +57,59 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	public static void main(String[] args) throws Exception{
         launch(args);
 	}
-	public void start(Stage stage) throws Exception {
+	public void addLicensePlate() {
+		Group root = new Group();
+		
+		AddLicensePlate = new Scene(root, Color.ALICEBLUE);
+		
+		Text sceneText = new Text("Add License Plate");
+		root.getChildren().add(sceneText);
+		
+		Menu menu1 = new Menu("Home");
+		sceneHome = new MenuItem("Home");
+		sceneHome.setOnAction(this);
+		menu1.getItems().add(sceneHome);
+		Menu menu2 = new Menu("Approved Plates");
+		MenuItem menu2Item1 = new MenuItem("Source...");
+		sceneAddLicensePlate = new MenuItem("Add Plates");
+		sceneRemoveLicensePlate = new MenuItem("Remove Plates");
+		sceneAddLicensePlate.setOnAction(this);
+		sceneRemoveLicensePlate.setOnAction(this);
+		menu2.getItems().add(menu2Item1);
+		menu2.getItems().add(sceneAddLicensePlate);
+		menu2.getItems().add(sceneRemoveLicensePlate);
+		MenuBar menuBar = new MenuBar();
+		menuBar.getMenus().addAll(menu1, menu2);
+		root.getChildren().add(menuBar);
+		
+	}
+	public void removeLicensePlate() {
+		Group root = new Group();
+		
+		RemoveLicensePlate = new Scene(root, Color.LIGHTGREEN);
+		
+		Text sceneText = new Text("Remove License Plate");
+		root.getChildren().add(sceneText);
+		
+		Menu menu1 = new Menu("Home");
+		sceneHome = new MenuItem("Home");
+		sceneHome.setOnAction(this);
+		menu1.getItems().add(sceneHome);
+		Menu menu2 = new Menu("Approved Plates");
+		MenuItem menu2Item1 = new MenuItem("Source...");
+		sceneAddLicensePlate = new MenuItem("Add Plates");
+		sceneRemoveLicensePlate = new MenuItem("Remove Plates");
+		sceneAddLicensePlate.setOnAction(this);
+		sceneRemoveLicensePlate.setOnAction(this);
+		menu2.getItems().add(menu2Item1);
+		menu2.getItems().add(sceneAddLicensePlate);
+		menu2.getItems().add(sceneRemoveLicensePlate);
+		MenuBar menuBar = new MenuBar();
+		menuBar.getMenus().addAll(menu1, menu2);
+		root.getChildren().add(menuBar);
+	}
+	public void start(Stage primaryStage) throws Exception {
+		stage = primaryStage;
 		stage.setTitle("CTS");//title for the window i.e. eclipse-workspace
 		//if the primary resolution height is less than 1100px so 1080p and below the window size will scale down
 		if(Screen.getPrimary().getBounds().getMaxX() < 1100) {
@@ -77,9 +125,9 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			lineWeight = 2;
 		}
 		//this is where all of the objects are inserted
-		root = new Group();
+		Group root = new Group();
 		//contains all of the UI containers(only root for current application)
-		Scene scene = new Scene(root,Color.DARKGRAY);
+		Home = new Scene(root,Color.DARKGRAY);
 		//draws a rectangle with a base color the same as the background(this is changed later to show status of license plate)
 		approvalShow = new Rectangle(xMid, windowHeight*0.65, xEnd-xMid, windowHeight/10);
 		approvalShow.setFill(Color.DARKGRAY);
@@ -95,7 +143,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		root.getChildren().add(inputImage);
 		
 		//stylesheet (only used for buttons)
-		scene.getStylesheets().add("stylesheet.css");
+		Home.getStylesheets().add("stylesheet.css");
 		
 		//promt the user to select an image file
 		FileChooser fileChooser = new FileChooser();
@@ -231,27 +279,19 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		line5.setEndY(windowHeight*0.65);
 		line5.setStrokeWidth(lineWeight);
 		root.getChildren().add(line5);
-		
 		Menu menu1 = new Menu("Home");
-		menu1.setOnShowing(e -> { System.out.println("Showing Menu 1"); });
-		menu1.setOnShown  (e -> { System.out.println("Shown Menu 1"); });
-		menu1.setOnHiding (e -> { System.out.println("Hiding Menu 1"); });
-		menu1.setOnHidden (e -> { System.out.println("Hidden Menu 1"); });
-		MenuItem menu1Item1 = new MenuItem("Item 1");
-		MenuItem menu1Item2 = new MenuItem("Item 2");
-		menu1.getItems().add(menu1Item1);
-		menu1.getItems().add(menu1Item2);
+		sceneHome = new MenuItem("Home");
+		sceneHome.setOnAction(this);
+		menu1.getItems().add(sceneHome);
 		Menu menu2 = new Menu("Approved Plates");
-		menu2.setOnShowing(e -> { System.out.println("Showing Menu 2"); });
-		menu2.setOnShown  (e -> { System.out.println("Shown Menu 2"); });
-		menu2.setOnHiding (e -> { System.out.println("Hiding Menu 2"); });
-		menu2.setOnHidden (e -> { System.out.println("Hidden Menu 2"); });
 		MenuItem menu2Item1 = new MenuItem("Source...");
-		MenuItem menu2Item2 = new MenuItem("Add Plates");
-		MenuItem menu2Item3 = new MenuItem("Remove Plates");
+		sceneAddLicensePlate = new MenuItem("Add Plates");
+		sceneRemoveLicensePlate = new MenuItem("Remove Plates");
+		sceneAddLicensePlate.setOnAction(this);
+		sceneRemoveLicensePlate.setOnAction(this);
 		menu2.getItems().add(menu2Item1);
-		menu2.getItems().add(menu2Item2);
-		menu2.getItems().add(menu2Item3);
+		menu2.getItems().add(sceneAddLicensePlate);
+		menu2.getItems().add(sceneRemoveLicensePlate);
 		MenuBar menuBar = new MenuBar();
 		menuBar.getMenus().addAll(menu1, menu2);
 		root.getChildren().add(menuBar);
@@ -263,7 +303,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		stage.setHeight(windowHeight);//height of window
 		stage.setResizable(false);//allow resizing
 		
-		stage.setScene(scene);//sets the scene to the stage
+		stage.setScene(Home);//sets the scene to the stage
 		stage.show();//needs to be at end, displays the window on launch
 	}
 	public void handle(ActionEvent event){
@@ -328,8 +368,20 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 				approvedText.setText("ERROR: No Image Selected");
 				
 			}
+			
+		}
+		if(event.getSource() == sceneAddLicensePlate) {
+			addLicensePlate();
+			stage.setScene(AddLicensePlate);
+		}
+		if(event.getSource() == sceneRemoveLicensePlate) {
+			removeLicensePlate();
+			stage.setScene(RemoveLicensePlate);
+		}
+		if(event.getSource() == sceneHome) {
+			System.out.println("Go Home");
+			stage.setScene(Home);
 		}
 		
 	}
-
 }
