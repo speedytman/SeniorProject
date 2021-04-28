@@ -9,11 +9,12 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -33,17 +34,21 @@ import javafx.geometry.Pos;
 
 public class Main extends Application implements EventHandler<ActionEvent>{
 
+	LicensePlate lp = new LicensePlate();
+	FileChooser fileChooser = new FileChooser();
+	
 	Stage stage;
 	Scene Home, AddLicensePlate, RemoveLicensePlate;
 	Button selectImage, runStuff;
-	MenuItem sceneAddLicensePlate, sceneRemoveLicensePlate, sceneHome;
-	Text outText, approvedText, inputImagePath;
+	MenuItem sceneAddLicensePlate, sceneRemoveLicensePlate, sceneHome, source;
+	Text outText, approvedText, inputImagePath, currentLocation;
 	Rectangle approvalShow;
 	ImageView plateImage, inputImage;
-	TableView approvedPlates;
 	File selectedFile;
 	Image lpImage;
 	VBox selectImageVBox;
+	
+	String approvedPlatesLocation ="Current File: " + System.getProperty("user.dir") + "\\src\\ApprovedLocensePlates.txt";
 	int windowHeight = 1000;
 	int windowWidth = 2000;
 	int xStart = 0;
@@ -56,6 +61,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	int fontSizeMedium = 80;
 	int fontSizeSmall = 20;
 	int lineWeight = 5;
+	int line = lp.getNumberOfLicensePlates();
 	
 	public static void main(String[] args) throws Exception{
         launch(args);
@@ -77,14 +83,60 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		TitleHBox.setMinSize(windowWidth, windowHeight*0.15);
 		root.getChildren().add(TitleHBox);
 		
-		approvedPlates = new TableView();
-		approvedPlates.setLayoutX(xMid);
-		approvedPlates.setLayoutY(yMid);
-		TableColumn<LicensePlate, String> column1 = new TableColumn<>("Approved Plates");
-		approvedPlates.getColumns().add(column1);
-		root.getChildren().add(approvedPlates);
-		LicensePlate lp = new LicensePlate();
+		VBox enterTextVBox = new VBox();
+		enterTextVBox.setAlignment(Pos.CENTER);
+		enterTextVBox.setLayoutX(xStart);
+		enterTextVBox.setLayoutY(windowHeight/10);
+		enterTextVBox.setMinSize(windowWidth/2, windowHeight*0.75);
+		enterTextVBox.setMaxSize(windowWidth/2, windowHeight*0.75);
+		enterTextVBox.setSpacing(10);
+		TextField enteredText = new TextField();
+		enteredText.setMaxHeight(27);
+		enteredText.setMaxWidth(100);
+		enteredText.setMinHeight(27);
+		enteredText.setMinWidth(200);
+		Button btn2 = new Button("Add Approved Plate");
+		enterTextVBox.getChildren().addAll(enteredText, btn2);
+		root.getChildren().add(enterTextVBox);
 		
+		HBox currentApprovedLPs = new HBox();
+		currentApprovedLPs.setAlignment(Pos.TOP_CENTER);
+		currentApprovedLPs.setLayoutX(xMid);
+		currentApprovedLPs.setLayoutY(windowHeight/10);
+		currentApprovedLPs.setMinSize(windowWidth/2, windowHeight*0.75);
+		currentApprovedLPs.setMaxSize(windowWidth/2, windowHeight*0.75);
+		currentApprovedLPs.setSpacing(15);
+		Label lps1 = new Label();
+		lps1.setMaxHeight(windowHeight*0.75);
+		lps1.setFont(Font.font("Times New Roman", 20));
+		Label lps2 = new Label();
+		lps2.setMaxHeight(windowHeight*0.75);
+		lps2.setFont(Font.font("Times New Roman", 20));
+		Label lps3 = new Label();
+		lps3.setMaxHeight(windowHeight*0.75);
+		lps3.setFont(Font.font("Times New Roman", 20));
+		Label lps4 = new Label();
+		lps4.setMaxHeight(windowHeight*0.75);
+		lps4.setFont(Font.font("Times New Roman", 20));
+		
+		for(int i = 0; i < line; i++) {
+			if(i%4==0) {
+				lps1.setText(lps1.getText() + lp.getApprovedPlate(i));
+			}
+			if(i%4==1) {
+				lps2.setText(lps2.getText() + lp.getApprovedPlate(i));
+			}
+			if(i%4==2) {
+				lps3.setText(lps3.getText() + lp.getApprovedPlate(i));
+			}
+			if(i%4==3) {
+				lps4.setText(lps4.getText() + lp.getApprovedPlate(i));
+			}
+		}
+
+		currentApprovedLPs.getChildren().addAll(lps1, lps2, lps3, lps4);
+		root.getChildren().add(currentApprovedLPs);
+		/*
 		Button btn1 = new Button("Get Approved Plate");
 		btn1.setOnAction(e -> {
 			System.out.println(lp.getAllApprovedPlate());
@@ -92,22 +144,54 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		btn1.setLayoutX(xMid-200);
 		btn1.setLayoutY(yMid-100);
 		root.getChildren().add(btn1);
-		
-		Button btn2 = new Button("Add Approved Plate");
+		*/
 		btn2.setOnAction(e -> {
-			lp.addApprovedPlate("Hello");
+			lp.addApprovedPlate(enteredText.getText().toUpperCase());
+			enteredText.clear();
+			System.out.println("" + line);
+			
+			if(line%4==0) {
+				currentApprovedLPs.getChildren().removeAll(lps1, lps2, lps3, lps4);
+				root.getChildren().remove(currentApprovedLPs);
+				lps1.setText(lps1.getText() + lp.getApprovedPlate(line));
+				currentApprovedLPs.getChildren().addAll(lps1, lps2, lps3, lps4);
+				root.getChildren().add(currentApprovedLPs);
+			}
+			if(line%4==1) {
+				currentApprovedLPs.getChildren().removeAll(lps1, lps2, lps3, lps4);
+				root.getChildren().remove(currentApprovedLPs);
+				lps2.setText(lps2.getText() + lp.getApprovedPlate(line));
+				currentApprovedLPs.getChildren().addAll(lps1, lps2, lps3, lps4);
+				root.getChildren().add(currentApprovedLPs);
+			}
+			if(line%4==2) {
+				currentApprovedLPs.getChildren().removeAll(lps1, lps2, lps3, lps4);
+				root.getChildren().remove(currentApprovedLPs);
+				lps3.setText(lps3.getText() + lp.getApprovedPlate(line));
+				currentApprovedLPs.getChildren().addAll(lps1, lps2, lps3, lps4);
+				root.getChildren().add(currentApprovedLPs);
+			}
+			if(line%4==3) {
+				currentApprovedLPs.getChildren().removeAll(lps1, lps2, lps3, lps4);
+				root.getChildren().remove(currentApprovedLPs);
+				lps4.setText(lps4.getText() + lp.getApprovedPlate(line));
+				currentApprovedLPs.getChildren().addAll(lps1, lps2, lps3, lps4);
+				root.getChildren().add(currentApprovedLPs);
+			}	
+			line++;
 		});
-		btn2.setLayoutX(xMid-200);
-		btn2.setLayoutY(yMid-200);
-		root.getChildren().add(btn2);
-	
-		Button btn3 = new Button("Remove Approved Plate");
-		btn3.setOnAction(e -> {
-			lp.removeApprovedPlate("Hello");
-		});
-		btn3.setLayoutX(xMid-200);
-		btn3.setLayoutY(yMid);
-		root.getChildren().add(btn3);
+		
+		currentLocation = new Text();
+		currentLocation.setText(approvedPlatesLocation);
+		currentLocation.setTextAlignment(TextAlignment.CENTER);
+		currentLocation.setFont(Font.font("Times New Roman", 30));
+		VBox CurrentLocationVBox = new VBox(currentLocation);
+		CurrentLocationVBox.setAlignment(Pos.CENTER);
+		CurrentLocationVBox.setLayoutX(xStart);
+		CurrentLocationVBox.setLayoutY(windowHeight*0.85);
+		CurrentLocationVBox.setMinSize(windowWidth, windowHeight/10);
+		root.getChildren().add(CurrentLocationVBox);
+		
 		//draws lines on screen
 		Line line1 = new Line();
 		line1.setStartX(xStart);
@@ -138,12 +222,13 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		sceneHome.setOnAction(this);
 		menu1.getItems().add(sceneHome);
 		Menu menu2 = new Menu("Approved Plates");
-		MenuItem menu2Item1 = new MenuItem("Source...");
+		source = new MenuItem("Source...");
 		sceneAddLicensePlate = new MenuItem("Add Plates");
 		sceneRemoveLicensePlate = new MenuItem("Remove Plates");
 		sceneAddLicensePlate.setOnAction(this);
 		sceneRemoveLicensePlate.setOnAction(this);
-		menu2.getItems().add(menu2Item1);
+		source.setOnAction(this);
+		menu2.getItems().add(source);
 		menu2.getItems().add(sceneAddLicensePlate);
 		menu2.getItems().add(sceneRemoveLicensePlate);
 		MenuBar menuBar = new MenuBar();
@@ -166,6 +251,98 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		TitleHBox.setLayoutY(yStart-(windowHeight*0.015));
 		TitleHBox.setMinSize(windowWidth, windowHeight*0.15);
 		root.getChildren().add(TitleHBox);
+		
+		VBox enterTextVBox = new VBox();
+		enterTextVBox.setAlignment(Pos.CENTER);
+		enterTextVBox.setLayoutX(xStart);
+		enterTextVBox.setLayoutY(windowHeight/10);
+		enterTextVBox.setMinSize(windowWidth/2, windowHeight*0.75);
+		enterTextVBox.setMaxSize(windowWidth/2, windowHeight*0.75);
+		enterTextVBox.setSpacing(10);
+		TextField enteredText = new TextField();
+		enteredText.setMaxHeight(27);
+		enteredText.setMaxWidth(100);
+		enteredText.setMinHeight(27);
+		enteredText.setMinWidth(200);
+		Button btn3 = new Button("Remove Approved Plate");
+		enterTextVBox.getChildren().addAll(enteredText, btn3);
+		root.getChildren().add(enterTextVBox);
+		
+		HBox currentApprovedLPs = new HBox();
+		currentApprovedLPs.setAlignment(Pos.TOP_CENTER);
+		currentApprovedLPs.setLayoutX(xMid);
+		currentApprovedLPs.setLayoutY(windowHeight/10);
+		currentApprovedLPs.setMinSize(windowWidth/2, windowHeight*0.75);
+		currentApprovedLPs.setMaxSize(windowWidth/2, windowHeight*0.75);
+		currentApprovedLPs.setSpacing(15);
+		Label lps1 = new Label();
+		lps1.setMaxHeight(windowHeight*0.75);
+		lps1.setFont(Font.font("Times New Roman", 20));
+		Label lps2 = new Label();
+		lps2.setMaxHeight(windowHeight*0.75);
+		lps2.setFont(Font.font("Times New Roman", 20));
+		Label lps3 = new Label();
+		lps3.setMaxHeight(windowHeight*0.75);
+		lps3.setFont(Font.font("Times New Roman", 20));
+		Label lps4 = new Label();
+		lps4.setMaxHeight(windowHeight*0.75);
+		lps4.setFont(Font.font("Times New Roman", 20));
+		
+		for(int i = 0; i < line; i++) {
+			if(i%4==0) {
+				lps1.setText(lps1.getText() + lp.getApprovedPlate(i));
+			}
+			if(i%4==1) {
+				lps2.setText(lps2.getText() + lp.getApprovedPlate(i));
+			}
+			if(i%4==2) {
+				lps3.setText(lps3.getText() + lp.getApprovedPlate(i));
+			}
+			if(i%4==3) {
+				lps4.setText(lps4.getText() + lp.getApprovedPlate(i));
+			}
+		}
+
+		currentApprovedLPs.getChildren().addAll(lps1, lps2, lps3, lps4);
+		root.getChildren().add(currentApprovedLPs);
+		
+		btn3.setOnAction(e -> {
+			lp.removeApprovedPlate(enteredText.getText().toUpperCase());
+			enteredText.clear();
+			lps1.setText("");
+			lps2.setText("");
+			lps3.setText("");
+			lps4.setText("");
+			
+			line = lp.getNumberOfLicensePlates();
+			for(int i = 0; i < line; i++) {
+				if(i%4==0) {
+					lps1.setText(lps1.getText() + lp.getApprovedPlate(i));
+				}
+				if(i%4==1) {
+					lps2.setText(lps2.getText() + lp.getApprovedPlate(i));
+				}
+				if(i%4==2) {
+					lps3.setText(lps3.getText() + lp.getApprovedPlate(i));
+				}
+				if(i%4==3) {
+					lps4.setText(lps4.getText() + lp.getApprovedPlate(i));
+				}
+			}
+			currentApprovedLPs.getChildren().removeAll(lps1, lps2, lps3, lps4);
+			currentApprovedLPs.getChildren().addAll(lps1, lps2, lps3, lps4);
+		});
+		
+		currentLocation = new Text();
+		currentLocation.setText(approvedPlatesLocation);
+		currentLocation.setTextAlignment(TextAlignment.CENTER);
+		currentLocation.setFont(Font.font("Times New Roman", 30));
+		VBox CurrentLocationVBox = new VBox(currentLocation);
+		CurrentLocationVBox.setAlignment(Pos.CENTER);
+		CurrentLocationVBox.setLayoutX(xStart);
+		CurrentLocationVBox.setLayoutY(windowHeight*0.85);
+		CurrentLocationVBox.setMinSize(windowWidth, windowHeight/10);
+		root.getChildren().add(CurrentLocationVBox);
 		
 		//draws lines on screen
 		Line line1 = new Line();
@@ -197,12 +374,13 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		sceneHome.setOnAction(this);
 		menu1.getItems().add(sceneHome);
 		Menu menu2 = new Menu("Approved Plates");
-		MenuItem menu2Item1 = new MenuItem("Source...");
+		source = new MenuItem("Source...");
 		sceneAddLicensePlate = new MenuItem("Add Plates");
 		sceneRemoveLicensePlate = new MenuItem("Remove Plates");
 		sceneAddLicensePlate.setOnAction(this);
 		sceneRemoveLicensePlate.setOnAction(this);
-		menu2.getItems().add(menu2Item1);
+		source.setOnAction(this);
+		menu2.getItems().add(source);
 		menu2.getItems().add(sceneAddLicensePlate);
 		menu2.getItems().add(sceneRemoveLicensePlate);
 		MenuBar menuBar = new MenuBar();
@@ -246,8 +424,8 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		//stylesheet (only used for buttons)
 		Home.getStylesheets().add("stylesheet.css");
 		
-		//promt the user to select an image file
-		FileChooser fileChooser = new FileChooser();
+		//prompt the user to select an image file
+		
 		fileChooser.getExtensionFilters().addAll(
 				new FileChooser.ExtensionFilter("JPG Files", "*.jpg")
 				,new FileChooser.ExtensionFilter("PNG Files", "*.png")
@@ -386,12 +564,13 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		sceneHome.setOnAction(this);
 		menu1.getItems().add(sceneHome);
 		Menu menu2 = new Menu("Approved Plates");
-		MenuItem menu2Item1 = new MenuItem("Source...");
+		source = new MenuItem("Source...");
 		sceneAddLicensePlate = new MenuItem("Add Plates");
 		sceneRemoveLicensePlate = new MenuItem("Remove Plates");
 		sceneAddLicensePlate.setOnAction(this);
 		sceneRemoveLicensePlate.setOnAction(this);
-		menu2.getItems().add(menu2Item1);
+		source.setOnAction(this);
+		menu2.getItems().add(source);
 		menu2.getItems().add(sceneAddLicensePlate);
 		menu2.getItems().add(sceneRemoveLicensePlate);
 		MenuBar menuBar = new MenuBar();
@@ -481,8 +660,14 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			stage.setScene(RemoveLicensePlate);
 		}
 		if(event.getSource() == sceneHome) {
-			System.out.println("Go Home");
 			stage.setScene(Home);
+		}
+		if(event.getSource() == source) {
+			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+			File approvedPlates = fileChooser.showOpenDialog(null);
+			approvedPlatesLocation = approvedPlates.getPath();
+			currentLocation.setText("Current File: " + approvedPlatesLocation);
+			lp.setApprovedPlateFileLocation(approvedPlatesLocation);
 		}
 		
 	}
