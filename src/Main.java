@@ -13,7 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -35,7 +34,8 @@ import javafx.geometry.Pos;
 public class Main extends Application implements EventHandler<ActionEvent>{
 
 	LicensePlate lp = new LicensePlate();
-	FileChooser fileChooser = new FileChooser();
+	FileChooser imageChooser = new FileChooser();
+	FileChooser sourceChooser = new FileChooser();
 	
 	Stage stage;
 	Scene Home, AddLicensePlate, RemoveLicensePlate;
@@ -136,15 +136,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 
 		currentApprovedLPs.getChildren().addAll(lps1, lps2, lps3, lps4);
 		root.getChildren().add(currentApprovedLPs);
-		/*
-		Button btn1 = new Button("Get Approved Plate");
-		btn1.setOnAction(e -> {
-			System.out.println(lp.getAllApprovedPlate());
-		});
-		btn1.setLayoutX(xMid-200);
-		btn1.setLayoutY(yMid-100);
-		root.getChildren().add(btn1);
-		*/
+
 		btn2.setOnAction(e -> {
 			lp.addApprovedPlate(enteredText.getText().toUpperCase());
 			enteredText.clear();
@@ -426,10 +418,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		
 		//prompt the user to select an image file
 		
-		fileChooser.getExtensionFilters().addAll(
-				new FileChooser.ExtensionFilter("JPG Files", "*.jpg")
-				,new FileChooser.ExtensionFilter("PNG Files", "*.png")
-				);
+		imageChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JPG or PNG Image Files", "*.jpg","*.png"));
 		//VBox and button for selecting image
 		selectImageVBox = new VBox();
 		selectImage = new Button();
@@ -437,7 +426,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		//action if button is pressed
 		selectImage.setOnAction(e -> {
 			//opens a system explorer instance to choose an image file
-			selectedFile = fileChooser.showOpenDialog(null);
+			selectedFile = imageChooser.showOpenDialog(null);
 			
 			//sets image to be the image at the path of the selected file
 			Image image = new Image(selectedFile.toURI().toString());
@@ -663,8 +652,8 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			stage.setScene(Home);
 		}
 		if(event.getSource() == source) {
-			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
-			File approvedPlates = fileChooser.showOpenDialog(null);
+			sourceChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+			File approvedPlates = sourceChooser.showOpenDialog(null);
 			approvedPlatesLocation = approvedPlates.getPath();
 			currentLocation.setText("Current File: " + approvedPlatesLocation);
 			lp.setApprovedPlateFileLocation(approvedPlatesLocation);
