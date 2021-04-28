@@ -70,7 +70,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	public void addLicensePlate() {
 		Group root = new Group();
 		
-		AddLicensePlate = new Scene(root, Color.ALICEBLUE);
+		AddLicensePlate = new Scene(root, Color.DARKGREY);
 		
 		Text title = new Text();
 		title.setText("Add License Plates");
@@ -239,7 +239,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	public void removeLicensePlate() {
 		Group root = new Group();
 		
-		RemoveLicensePlate = new Scene(root, Color.LIGHTGREEN);
+		RemoveLicensePlate = new Scene(root, Color.DARKGREY);
 		
 		Text title = new Text();
 		title.setText("Remove License Plates");
@@ -616,10 +616,11 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 					plateImage.setImage(lpImage);
 					
 					//in place of the database for now
-					String[] licensePlates = new String[3];
-					licensePlates[0] = "B21GSB";
-					licensePlates[1] = "SB90TZI";
-					licensePlates[2] = "C99BNX";
+					String[] licensePlates = new String[line];
+					for(int i = 0; i < line; i++) {
+						licensePlates[i] = lp.getApprovedPlate(i).toString();
+						licensePlates[i] = licensePlates[i].replaceAll("[\\n\\t ]", "");
+					}
 					boolean approved = false;
 					//check if predicted plate is in the "database"
 					for(int i = 0; i < licensePlates.length; i++) {
@@ -630,7 +631,6 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 							approvedText.setFill(Color.WHITE);
 							approvalShow.setFill(Color.LAWNGREEN);
 						}
-						System.out.println(licensePlates[i].equals(x.toString()) + ": " + i);
 					}
 					if(approved == false) {
 						//sets test to not approved and rectangle color to red
