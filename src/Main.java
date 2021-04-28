@@ -12,6 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -38,6 +40,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	Text outText, approvedText, inputImagePath;
 	Rectangle approvalShow;
 	ImageView plateImage, inputImage;
+	TableView approvedPlates;
 	File selectedFile;
 	Image lpImage;
 	VBox selectImageVBox;
@@ -57,13 +60,78 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	public static void main(String[] args) throws Exception{
         launch(args);
 	}
+	
 	public void addLicensePlate() {
 		Group root = new Group();
 		
 		AddLicensePlate = new Scene(root, Color.ALICEBLUE);
 		
-		Text sceneText = new Text("Add License Plate");
-		root.getChildren().add(sceneText);
+		Text title = new Text();
+		title.setText("Add License Plates");
+		title.setTextAlignment(TextAlignment.CENTER);
+		title.setFont(Font.font("Times New Roman", fontSizeLarge));
+		HBox TitleHBox = new HBox(title);
+		TitleHBox.setAlignment(Pos.TOP_CENTER);
+		TitleHBox.setLayoutX(xStart);
+		TitleHBox.setLayoutY(yStart-(windowHeight*0.015));
+		TitleHBox.setMinSize(windowWidth, windowHeight*0.15);
+		root.getChildren().add(TitleHBox);
+		
+		approvedPlates = new TableView();
+		approvedPlates.setLayoutX(xMid);
+		approvedPlates.setLayoutY(yMid);
+		TableColumn<LicensePlate, String> column1 = new TableColumn<>("Approved Plates");
+		approvedPlates.getColumns().add(column1);
+		root.getChildren().add(approvedPlates);
+		LicensePlate lp = new LicensePlate();
+		
+		Button btn1 = new Button("Get Approved Plate");
+		btn1.setOnAction(e -> {
+			System.out.println(lp.getAllApprovedPlate());
+		});
+		btn1.setLayoutX(xMid-200);
+		btn1.setLayoutY(yMid-100);
+		root.getChildren().add(btn1);
+		
+		Button btn2 = new Button("Add Approved Plate");
+		btn2.setOnAction(e -> {
+			lp.addApprovedPlate("Hello");
+		});
+		btn2.setLayoutX(xMid-200);
+		btn2.setLayoutY(yMid-200);
+		root.getChildren().add(btn2);
+	
+		Button btn3 = new Button("Remove Approved Plate");
+		btn3.setOnAction(e -> {
+			lp.removeApprovedPlate("Hello");
+		});
+		btn3.setLayoutX(xMid-200);
+		btn3.setLayoutY(yMid);
+		root.getChildren().add(btn3);
+		//draws lines on screen
+		Line line1 = new Line();
+		line1.setStartX(xStart);
+		line1.setStartY(windowHeight*0.85);
+		line1.setEndX(xEnd);
+		line1.setEndY(windowHeight*0.85);
+		line1.setStrokeWidth(lineWeight);
+		root.getChildren().add(line1);
+				
+		Line line2 = new Line();
+		line2.setStartX(xMid);
+		line2.setStartY(windowHeight/10);
+		line2.setEndX(xMid);
+		line2.setEndY(windowHeight*0.85);
+		line2.setStrokeWidth(lineWeight);
+		root.getChildren().add(line2);
+				
+		Line line3 = new Line();
+		line3.setStartX(xStart);
+		line3.setStartY(windowHeight/10);
+		line3.setEndX(xEnd);
+		line3.setEndY(windowHeight/10);
+		line3.setStrokeWidth(lineWeight);
+		root.getChildren().add(line3);
 		
 		Menu menu1 = new Menu("Home");
 		sceneHome = new MenuItem("Home");
@@ -88,8 +156,41 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		
 		RemoveLicensePlate = new Scene(root, Color.LIGHTGREEN);
 		
-		Text sceneText = new Text("Remove License Plate");
-		root.getChildren().add(sceneText);
+		Text title = new Text();
+		title.setText("Remove License Plates");
+		title.setTextAlignment(TextAlignment.CENTER);
+		title.setFont(Font.font("Times New Roman", fontSizeLarge));
+		HBox TitleHBox = new HBox(title);
+		TitleHBox.setAlignment(Pos.TOP_CENTER);
+		TitleHBox.setLayoutX(xStart);
+		TitleHBox.setLayoutY(yStart-(windowHeight*0.015));
+		TitleHBox.setMinSize(windowWidth, windowHeight*0.15);
+		root.getChildren().add(TitleHBox);
+		
+		//draws lines on screen
+		Line line1 = new Line();
+		line1.setStartX(xStart);
+		line1.setStartY(windowHeight*0.85);
+		line1.setEndX(xEnd);
+		line1.setEndY(windowHeight*0.85);
+		line1.setStrokeWidth(lineWeight);
+		root.getChildren().add(line1);
+				
+		Line line2 = new Line();
+		line2.setStartX(xMid);
+		line2.setStartY(windowHeight/10);
+		line2.setEndX(xMid);
+		line2.setEndY(windowHeight*0.85);
+		line2.setStrokeWidth(lineWeight);
+		root.getChildren().add(line2);
+				
+		Line line3 = new Line();
+		line3.setStartX(xStart);
+		line3.setStartY(windowHeight/10);
+		line3.setEndX(xEnd);
+		line3.setEndY(windowHeight/10);
+		line3.setStrokeWidth(lineWeight);
+		root.getChildren().add(line3);	
 		
 		Menu menu1 = new Menu("Home");
 		sceneHome = new MenuItem("Home");
@@ -279,6 +380,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		line5.setEndY(windowHeight*0.65);
 		line5.setStrokeWidth(lineWeight);
 		root.getChildren().add(line5);
+		
 		Menu menu1 = new Menu("Home");
 		sceneHome = new MenuItem("Home");
 		sceneHome.setOnAction(this);
