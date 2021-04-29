@@ -140,7 +140,6 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		btn2.setOnAction(e -> {
 			lp.addApprovedPlate(enteredText.getText().toUpperCase());
 			enteredText.clear();
-			System.out.println("" + line);
 			
 			if(line%4==0) {
 				currentApprovedLPs.getChildren().removeAll(lps1, lps2, lps3, lps4);
